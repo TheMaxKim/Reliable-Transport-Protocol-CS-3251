@@ -7,14 +7,11 @@ public class RTPPacket {
 	// Data to be delivered in the RTP packet
 	private byte[] data;
 	
-
-	
 	// Constructor for a RTP packet
 	public RTPPacket(int sourcePort, int destinationPort, byte[] data) {
-
+		this.setHeader(new RTPHeader(sourcePort, destinationPort, 0));
 		this.setData(data);
 	}
-	
 	
 	public RTPHeader getHeader() {
 		return header;
@@ -33,25 +30,5 @@ public class RTPPacket {
 	}
 
 
-	private class RTPHeader {
-		private int sourcePort;
-		private int destinationPort;
-		private int sequenceNumber;
-		private int windowSizeOffset;
-		private int checksum;
-		
-		private boolean ACK;
-		private boolean NACK;
-		private boolean SYN;
-		private boolean FIN;
-		private boolean BEG;
-		
-		private int timestamp;
-		
-		public RTPHeader() {
-			super();
-		}
-		
-		
-	}
+
 }
