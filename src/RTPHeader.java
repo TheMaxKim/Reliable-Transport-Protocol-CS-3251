@@ -2,6 +2,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.Arrays;
 
 	public class RTPHeader {
@@ -11,6 +12,22 @@ import java.util.Arrays;
 		private int windowSizeOffset;
 		private int checksum;
 		
+		public int getSourcePort() {
+			return sourcePort;
+		}
+
+		public void setSourcePort(int sourcePort) {
+			this.sourcePort = sourcePort;
+		}
+
+		public int getDestinationPort() {
+			return destinationPort;
+		}
+
+		public void setDestinationPort(int destinationPort) {
+			this.destinationPort = destinationPort;
+		}
+
 		private boolean ACK;
 		private boolean NACK;
 		private boolean SYN;
@@ -22,9 +39,9 @@ import java.util.Arrays;
 		public RTPHeader() {
 			this.windowSizeOffset = 0;
 			this.checksum = 0;
-			this.ACK = false;
+			this.ACK = true;
 			this.NACK = false;
-			this.SYN = false;
+			this.SYN = true;
 			this.FIN = false;
 			this.BEG = true;
 			this.timestamp = 0;
@@ -145,6 +162,42 @@ import java.util.Arrays;
 			System.out.println(Arrays.toString(headerByteArray));
 			return headerByteArray;
 		}
+		
+		/*
+		 * Constructor for an RTP Header from a passed in byte array.
+		 */
+		public RTPHeader(byte[] headerByteArray) {
+			ByteBuffer byteBuffer = ByteBuffer.wrap(headerByteArray);
+			IntBuffer intBuffer = byteBuffer.asIntBuffer();
+			this.sourcePort = intBuffer.get(0);
+			this.destinationPort = intBuffer.get(1);
+			this.sequenceNumber = intBuffer.get(2);
+			this.windowSizeOffset = intBuffer.get(3);
+			this.checksum = intBuffer.get(4);
+			this.timestamp = intBuffer.get(6);
+			
+			System.out.println("sourcePort" + this.sourcePort);
+			System.out.println("destinationPort" + this.destinationPort);
+			System.out.println("windowSizeOffset" + this.windowSizeOffset);
+			System.out.println("checksum" + this.checksum);
+			System.out.println("timestamp" + this.timestamp);
+			
+			int flagsCombined = intBuffer.get(5);
+			
+			int ackInt = flagsCombined >>> 31;
+			int nackInt = (flagsCombined >>> 30) & 0x1;
+			int synInt = (flagsCombined >>> 29) & 0x1;
+			int finInt = (flagsCombined >>> 28) & 0x1;
+			int begInt = (flagsCombined >>> 27) & 0x1;
+			System.out.println("ackInt" + ackInt);
+			System.out.println("nackInt" + nackInt);
+			System.out.println("synInt" + synInt);
+			System.out.println("finInt" + finInt);
+			System.out.println("begInt" + begInt);
+		}
+		
+
+		
 		
 		public void updateTimestamp() {
 			

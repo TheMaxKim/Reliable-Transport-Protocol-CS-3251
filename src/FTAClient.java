@@ -22,7 +22,11 @@ public class FTAClient {
 		Scanner keyboard = new Scanner(System.in);
 		
 		RTPHeader testHeader = new RTPHeader(4, 5, 6);
-		testHeader.getHeaderByteArray();
+		testHeader.setChecksum(9999);
+		testHeader.setSequenceNumber(8888);
+		testHeader.setTimestamp(7777);
+		testHeader.setWindowSizeOffset(6666);
+		RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
 		
 	}
 	
