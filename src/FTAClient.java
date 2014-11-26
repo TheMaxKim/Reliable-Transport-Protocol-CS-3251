@@ -27,11 +27,14 @@ public class FTAClient {
 		testHeader.setSequenceNumber(8888);
 		testHeader.setTimestamp(7777);
 		testHeader.setWindowSizeOffset(6666);
-		//RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
-		
-		RTP testRTP = new RTP();
+		RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
+	
+		byte[] data = {00};
+		RTPPacket testPacket = new RTPPacket(50, 40, data);
+		testPacket.updateChecksum();
+		System.out.println("checksum " + testPacket.getHeader().getChecksum());
 		try {
-			testRTP.getNTPTimeStamp();
+			RTP.getNTPTimeStamp();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

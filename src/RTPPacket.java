@@ -71,6 +71,7 @@ public class RTPPacket {
 		
 		byte[] packetByteArray = getPacketByteArray();
 		
+		// Calculate the checksum value assuming the checksum header has a value of 0.
 		packetByteArray[16] = 0x00000000;
 
 		checksum.update(packetByteArray, 0, packetByteArray.length);
