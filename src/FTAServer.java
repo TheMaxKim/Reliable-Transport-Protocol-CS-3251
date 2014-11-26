@@ -17,9 +17,6 @@ public class FTAServer{
        * 2= ESTABLISHED
        */
 
-      State = 1;  //Passive open to LISTEN state
-      System.out.println("Server is running and listening.");
-      
       String portStr=args[0];
       String emuAdd=args[1];
       String emuPortStr=args[2];
@@ -28,9 +25,13 @@ public class FTAServer{
       InetAddress IP=InetAddress.getByName(emuAdd);
       int emuPort = Integer.parseInt(emuPortStr);
       
-      DatagramSocket serverSoc = DatagramSocket(port);
+      DatagramSocket serverSoc = new DatagramSocket(port);
+      
       byte[] receiveData = new byte[1024];
-      //
+      byte[] sendData = null;
+      
+      State = 1;  //Passive open to LISTEN state
+      System.out.println("Server is running and listening.");
             
       Scanner keyboard=new Scanner(System.in);
             
@@ -43,11 +44,14 @@ public class FTAServer{
             }
          }
          if(State==1){           //LISTEN
-            //receives SYN. 
-            //sends SYN+ack
-            State=2;    
-         }else if(State==2){     //ESTABLISHED
-            //!!
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length); 
+            serverSoc.receive(receivePacket);
+            byte[] packet = receivePacket.getData();
+            //TODO check if packet is SYN
+            //TODO then, send SYN+ack
+            State=2; //after sending SYN+ACK    
+         }else if(State==2){     //ESTABLISHED 
+            //TODO send file to client
          }                  
       }
    }
