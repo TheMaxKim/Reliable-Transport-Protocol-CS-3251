@@ -39,11 +39,11 @@ import java.util.Arrays;
 		public RTPHeader() {
 			this.windowSizeOffset = 0;
 			this.checksum = 0;
-			this.ACK = true;
+			this.ACK = false;
 			this.NACK = false;
-			this.SYN = true;
+			this.SYN = false;
 			this.FIN = false;
-			this.BEG = true;
+			this.BEG = false;
 			this.timestamp = 0;
 		}
 		
