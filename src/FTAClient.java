@@ -29,8 +29,9 @@ public class FTAClient {
 		testHeader.setWindowSizeOffset(6666);
 		//RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
 		
+		RTP testRTP = new RTP();
 		try {
-			RTP.getNTPTimeStamp();
+			testRTP.getNTPTimeStamp();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
