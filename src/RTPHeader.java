@@ -22,9 +22,9 @@ import java.util.Arrays;
 		public RTPHeader() {
 			this.windowSizeOffset = 0;
 			this.checksum = 0;
-			this.ACK = true;
+			this.ACK = false;
 			this.NACK = false;
-			this.SYN = true;
+			this.SYN = false;
 			this.FIN = false;
 			this.BEG = true;
 			this.timestamp = 0;
@@ -41,6 +41,62 @@ import java.util.Arrays;
 
 		}
 		
+		public void setSequenceNumber(int sequenceNumber) {
+			this.sequenceNumber = sequenceNumber;
+		}
+		
+		public int getSequenceNumber() {
+			return sequenceNumber;
+		}
+		
+		public void setWindowSizeOffset(int windowSizeOffset) {
+			this.windowSizeOffset = windowSizeOffset;
+		}
+		
+		public int getWindowSizeOffset() {
+			return windowSizeOffset;
+		}
+		
+		public boolean isACK() {
+			return ACK;
+		}
+
+		public void setACK(boolean ACK) {
+			this.ACK = ACK;
+		}
+
+		public boolean isNACK() {
+			return NACK;
+		}
+
+		public void setNACK(boolean NACK) {
+			this.NACK = NACK;
+		}
+
+		public boolean isSYN() {
+			return SYN;
+		}
+
+		public void setSYN(boolean syn) {
+			this.SYN = SYN;
+		}
+
+		public boolean isFIN() {
+			return FIN;
+		}
+
+		public void setFIN(boolean FIN) {
+			this.FIN = FIN;
+		}
+
+		public boolean isBEG() {
+			return BEG;
+		}
+
+		public void setBEG(boolean BEG) {
+			this.BEG = BEG;
+		}
+
 		public void setChecksum(int checksum) {
 			this.checksum = checksum;
 		}
@@ -64,7 +120,7 @@ import java.util.Arrays;
 			byteBuffer.putInt(windowSizeOffset);
 			byteBuffer.putInt(checksum);
 			
-			//Converts the flags to corresponding bytes to be placed in the byte buffer
+			//Converts the flags to ints and then utilizes bitshifting and masking to create a binary string for the flag field row in the header.
 			int ackByte = (ACK ? 1 : 0) << 31;
 			int nackByte = (NACK ? 1 : 0) << 30;
 			int synByte = (SYN ? 1 : 0) << 29;
