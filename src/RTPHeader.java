@@ -196,12 +196,6 @@ import java.util.Arrays;
 			System.out.println("begInt" + begInt);
 		}
 		
-
-		
-		
-		public void updateTimestamp() {
-			
-		}
 		
 		public int getTimestamp() {
 			return timestamp;

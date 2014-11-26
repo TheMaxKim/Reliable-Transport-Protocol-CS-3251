@@ -10,19 +10,18 @@ import org.apache.commons.net.ntp.TimeInfo;
 public class RTP {
 	private DatagramSocket socket;
 	
-	public void getNTPTimeStamp() throws IOException {
+	public static void getNTPTimeStamp() throws IOException {
 		String TIME_SERVER = "time-a.nist.gov";   
 		NTPUDPClient timeClient = new NTPUDPClient();
 		InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
 		TimeInfo timeInfo = timeClient.getTime(inetAddress);
 		long returnTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
-		//Date time = new Date(returnTime);
 		
 
         splitTimeStamp(returnTime);
 	}
 	
-	public int splitTimeStamp(long timestamp) {
+	public static int splitTimeStamp(long timestamp) {
 		int RTPTimestamp;
 		
 		int firstHalf = (int) ((timestamp >> 32) & 0x0000FFFF);
@@ -36,10 +35,7 @@ public class RTP {
         RTPTimestamp = (firstHalf << 16) | secondHalf;
         System.out.println("RTPTimeStampBinaryString: " + Integer.toBinaryString(RTPTimestamp));
         
-        
-		return RTPTimestamp;
-		
-		
+		return RTPTimestamp;		
 	}
 	
 }
