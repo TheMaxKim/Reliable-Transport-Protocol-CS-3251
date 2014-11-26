@@ -2,6 +2,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 	public class RTPHeader {
 		private int sourcePort;
@@ -21,12 +22,12 @@ import java.nio.ByteOrder;
 		public RTPHeader() {
 			this.windowSizeOffset = 0;
 			this.checksum = 0;
-			this.ACK = false;
+			this.ACK = true;
 			this.NACK = false;
-			this.SYN = false;
+			this.SYN = true;
 			this.FIN = false;
-			this.BEG = false;
-			this.timestamp = 20;
+			this.BEG = true;
+			this.timestamp = 0;
 		}
 		
 		public RTPHeader(int sourcePort, int destinationPort, int sequenceNumber) {
@@ -64,35 +65,19 @@ import java.nio.ByteOrder;
 			byteBuffer.putInt(checksum);
 			
 			//Converts the flags to corresponding bytes to be placed in the byte buffer
-			int ackByte = (byte) (ACK ? 1 : 0);
-			int nackByte = (byte) (NACK ? 1 : 0);
-			int synByte = (byte) (SYN ? 1 : 0);
-			int finByte = (byte) (FIN ? 1 : 0);
-			int begByte = (byte) (BEG ? 1 : 0);
+			int ackByte = (ACK ? 1 : 0) << 31;
+			int nackByte = (NACK ? 1 : 0) << 30;
+			int synByte = (SYN ? 1 : 0) << 29;
+			int finByte = (FIN ? 1 : 0) << 28;
+			int begByte = (BEG ? 1 : 0) << 27;
 			
-			StringBuilder sb = new StringBuilder(5);
-			sb.append(ackByte);
-			sb.append(nackByte);
-			sb.append(synByte);
-			sb.append(finByte);
-			sb.append(begByte);
+
+			int flagsCombined = ackByte | nackByte | synByte | finByte | begByte;
+			System.out.println("flagsCombined " + flagsCombined);
 			
-			//Uses a byte array output stream to concatenate the flags
-			ByteArrayOutputStream flagOutputStream = new ByteArrayOutputStream();
-			
-			flagOutputStream.write(ackByte);
-			flagOutputStream.write(nackByte);
-			flagOutputStream.write(synByte);
-			flagOutputStream.write(finByte);
-			flagOutputStream.write(begByte);
-			
-			//Fills the rest of the byte array output stream with 0's, to fill in for the optional space of the row in the header.
-			for (int i = 0; i < 26; i++) {
-				flagOutputStream.write(0);
-			}
-			
+		
 			//Places the finished flag byte array in the byte buffer.
-			byteBuffer.put(flagOutputStream.toByteArray());
+			byteBuffer.putInt(flagsCombined);
 			
 			//Places the last header, the timestamp in the byte buffer.
 			byteBuffer.putInt(timestamp);
@@ -101,7 +86,19 @@ import java.nio.ByteOrder;
 			headerByteArray = byteBuffer.array();
 			
 			//Returns the completed byte buffer.
-			System.out.println(byteBuffer.toString());
+			System.out.println(Arrays.toString(headerByteArray));
 			return headerByteArray;
+		}
+		
+		public void updateTimestamp() {
+			
+		}
+		
+		public int getTimestamp() {
+			return timestamp;
+		}
+		
+		public void setTimestamp(int timestamp) {
+			this.timestamp = timestamp;
 		}
 	}

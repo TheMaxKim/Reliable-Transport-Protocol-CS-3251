@@ -1,5 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 
 public class RTPPacket {
@@ -52,6 +54,28 @@ public class RTPPacket {
 		this.data = data;
 	}
 
+	/*
+	 * Used to update the checksum field in an RTP packet header
+	 */
+	public void updateChecksum() {
+		header.setChecksum(calculateChecksum());
+	}
+	
+	/*
+	 * Calculates the CRC checksum of the packet, assuming the checksum field is set to 0.
+	 */
+	public int calculateChecksum() {
+		int checksumValue;
+		
+		Checksum checksum = new CRC32();
+		
+		byte[] packetByteArray = getPacketByteArray();
+		
+		packetByteArray[16] = 0x00000000;
 
+		checksum.update(packetByteArray, 0, packetByteArray.length);
+		checksumValue = (int) checksum.getValue();
+		return checksumValue;
+	}
 
 }
