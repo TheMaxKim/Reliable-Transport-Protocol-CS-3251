@@ -33,12 +33,11 @@ public class FTAClient {
 		RTPPacket testPacket = new RTPPacket(50, 40, data);
 		testPacket.updateChecksum();
 		System.out.println("checksum " + testPacket.getHeader().getChecksum());
-		try {
-			RTP.getNTPTimeStamp();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if (RTP.validateChecksum(testPacket)) {
+			System.out.println("Correct checksum");
 		}
+		
 		
 	}
 	

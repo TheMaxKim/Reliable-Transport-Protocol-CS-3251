@@ -25,14 +25,15 @@ public class RTP {
 	 * For the passed in packet, checks to see if the CRC checksum in the packet's header
 	 * is valid by recalculating the checksum.
 	 */
-	public boolean validateChecksum(RTPPacket packet) {
+	public static boolean validateChecksum(RTPPacket packet) {
 		
 		// Obtains the checksum from the passed in packet.
 		int packetChecksum = packet.getHeader().getChecksum();
 		
 		// Recalculates a checksum for the packet for comparison.
 		int calculatedChecksum = packet.calculateChecksum();
-		
+		System.out.println(packetChecksum);
+		System.out.println(calculatedChecksum);
 		// Returns the result of comparing the two checksums.
 		return (packetChecksum == calculatedChecksum);
 	}

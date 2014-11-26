@@ -1,5 +1,6 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -72,10 +73,15 @@ public class RTPPacket {
 		byte[] packetByteArray = getPacketByteArray();
 		
 		// Calculate the checksum value assuming the checksum header has a value of 0.
-		packetByteArray[16] = 0x00000000;
+		packetByteArray[16] = 0x00;
+		packetByteArray[17] = 0x00;
+		packetByteArray[18] = 0x00;
+		packetByteArray[19] = 0x00;
+		System.out.println(Arrays.toString(packetByteArray));
 
 		checksum.update(packetByteArray, 0, packetByteArray.length);
 		checksumValue = (int) checksum.getValue();
+		System.out.println("checksumValue" + checksumValue);
 		return checksumValue;
 	}
 

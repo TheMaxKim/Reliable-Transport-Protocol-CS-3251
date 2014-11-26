@@ -146,7 +146,8 @@ import java.util.Arrays;
 			
 
 			int flagsCombined = ackByte | nackByte | synByte | finByte | begByte;
-			System.out.println("flagsCombined " + flagsCombined);
+			
+			//System.out.println("flagsCombined " + flagsCombined);
 			
 		
 			//Places the finished flag byte array in the byte buffer.
@@ -154,7 +155,6 @@ import java.util.Arrays;
 			
 			//Places the last header, the timestamp in the byte buffer.
 			byteBuffer.putInt(timestamp);
-			
 			//Converts the byte buffer into a byte array.
 			headerByteArray = byteBuffer.array();
 			
@@ -176,11 +176,7 @@ import java.util.Arrays;
 			this.checksum = intBuffer.get(4);
 			this.timestamp = intBuffer.get(6);
 			
-			System.out.println("sourcePort" + this.sourcePort);
-			System.out.println("destinationPort" + this.destinationPort);
-			System.out.println("windowSizeOffset" + this.windowSizeOffset);
-			System.out.println("checksum" + this.checksum);
-			System.out.println("timestamp" + this.timestamp);
+
 			
 			int flagsCombined = intBuffer.get(5);
 			
@@ -189,11 +185,19 @@ import java.util.Arrays;
 			int synInt = (flagsCombined >>> 29) & 0x1;
 			int finInt = (flagsCombined >>> 28) & 0x1;
 			int begInt = (flagsCombined >>> 27) & 0x1;
+			
+			/* For Testing
+			System.out.println("sourcePort" + this.sourcePort);
+			System.out.println("destinationPort" + this.destinationPort);
+			System.out.println("windowSizeOffset" + this.windowSizeOffset);
+			System.out.println("checksum" + this.checksum);
+			System.out.println("timestamp" + this.timestamp);
 			System.out.println("ackInt" + ackInt);
 			System.out.println("nackInt" + nackInt);
 			System.out.println("synInt" + synInt);
 			System.out.println("finInt" + finInt);
 			System.out.println("begInt" + begInt);
+			*/
 		}
 		
 		
