@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -26,7 +27,14 @@ public class FTAClient {
 		testHeader.setSequenceNumber(8888);
 		testHeader.setTimestamp(7777);
 		testHeader.setWindowSizeOffset(6666);
-		RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
+		//RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
+		
+		try {
+			RTP.getNTPTimeStamp();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
