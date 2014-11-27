@@ -1,6 +1,8 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -31,7 +33,32 @@ public class FTAClient {
 		
 		Scanner keyboard = new Scanner(System.in);
 
+		RTP testRTP = new RTP(IPAddress, hostPort, destinationPort);
 		
+		
+		
+		while (true) {
+			String input = keyboard.nextLine();
+			
+			if (input.equals("")) {
+				System.out.println("Please enter a command.");
+			}
+			
+			String[] commands = input.split(" ");
+			
+			
+			if (commands[0].equals("connect-get") && commands.length == 2) {
+					
+					String fileName = commands[1];
+					testRTP.send(fileName.getBytes(Charset.forName("UTF-8")));
+					
+					
+			} else {
+				System.out.println("Invalid command or number of arguments.");
+			}
+			
+			
+		}
 		
 		
 	}

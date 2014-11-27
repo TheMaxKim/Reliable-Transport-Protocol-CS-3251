@@ -19,10 +19,13 @@ public class RTP {
 	private InetAddress serverAddress;
 	
 	DatagramPacket recvPacket;
+	DatagramPacket sendPacket;
 	private int sourcePort;
 	private int destinationPort;
-   private int threshold;        //RTT timeout threshold
+    private int threshold;        //RTT timeout threshold
 	
+    
+    
 	public RTP(InetAddress serverAddress, int sourcePort, int destinationPort) {
 		this.serverAddress = serverAddress;
 		this.sourcePort = sourcePort;
@@ -35,8 +38,22 @@ public class RTP {
 		}
 	}
 	
+	public void establishConnection(int sourcePort, int destinationPort) throws IOException {
+		RTPPacket synPacket;
+		RTPHeader synHeader = new RTPHeader(sourcePort, destinationPort, 0);
+		synHeader.setSYN(true);
+		synHeader.setTimestamp(getNTPTimeStamp());
+		synPacket = new RTPPacket(synHeader, null);
+		synPacket.updateChecksum();
+		
+		byte[] synPacketBytes = synPacket.getPacketByteArray();
+		sendPacket = new DatagramPacket(synPacketBytes, synPacketBytes.length, serverAddress, destinationPort);
+		socket.send(sendPacket);
+		System.out.println("Attempting to establish connection.");
+	}
+	
 	public void send(byte[] data) throws IOException {
-		DatagramPacket sendPacket = new DatagramPacket(data, data.length, serverAddress, destinationPort);
+		sendPacket = new DatagramPacket(data, data.length, serverAddress, destinationPort);
 		System.out.println("send " + Arrays.toString(data));
 		socket.send(sendPacket);
 

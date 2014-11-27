@@ -22,6 +22,15 @@ public class RTPPacket {
 	}
 
 	/*
+	 * Constructor for a RTP packet with only the source port and destination port
+	 */
+	public RTPPacket(int sourcePort, int destinationPort) {
+		this.setHeader(new RTPHeader(sourcePort, destinationPort, 0));
+		this.setData(data);
+	}
+
+	
+	/*
 	 * Constructor for a RTP packet with a provided header and data
 	 */
 	public RTPPacket(RTPHeader header, byte[] data) {
