@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -24,7 +27,8 @@ public class RTP {
 	private int sourcePort;
 	private int destinationPort;
     private int threshold;        //RTT timeout threshold
-
+    private int sequenceNumber;
+    
     private ArrayList<RTPPacket> packetSendBuffer;
     private ArrayList<RTPPacket> packetReceiveBuffer;
 
@@ -76,6 +80,7 @@ public class RTP {
 		recvPacket = new DatagramPacket(new byte[MAXBUFFER], MAXBUFFER);
 
 		socket.send(sendPacket);
+		sequenceNumber++;
 		state = 1;
 		while (state == 1) {
 			listen();
@@ -91,6 +96,7 @@ public class RTP {
 	public void send(byte[] data) throws IOException {
 		sendPacket = new DatagramPacket(data, data.length, serverAddress, destinationPort);
 		System.out.println("send " + Arrays.toString(data));
+		sequenceNumber++;
 		socket.send(sendPacket);
 
 	}
@@ -112,30 +118,39 @@ public class RTP {
 			byte[] receivedData = new byte[recvPacket.getLength()];
 			
 			receivedData = Arrays.copyOfRange(recvPacket.getData(), 0, recvPacket.getLength());
-			System.out.println(recvPacket.getLength());
+			
 			RTPPacket receivedRTPPacket = new RTPPacket(receivedData);
+			RTPHeader receivedHeader = receivedRTPPacket.getHeader();
+			
 			//System.out.println("data length " + receivedData.length + "packet length " + receivedRTPPacket.getPacketByteArray().length);
 			//System.out.println(receivedRTPPacket.getHeader().getChecksum());
 			//System.out.println("rtppacket" + Arrays.toString(receivedRTPPacket.getPacketByteArray()));
-			if (Arrays.equals(receivedData, receivedRTPPacket.getPacketByteArray())) System.out.println("wtf");
 			//System.out.println(receivedRTPPacket.calculateChecksum());
 			
-			System.out.println(receivedRTPPacket.getHeader().isSYN());
 			
-			if (receivedRTPPacket.getHeader().getChecksum() == receivedRTPPacket.calculateChecksum()) {
-				System.out.println("match");
+			if (receivedHeader.getChecksum() == receivedRTPPacket.calculateChecksum()) {
+				
+				
 				packetReceiveBuffer.add(receivedRTPPacket);
 				
-				
+				while (!receivedHeader.isFIN()) {
+					recvPacket = new DatagramPacket(new byte[MAXBUFFER], MAXBUFFER);
+					socket.receive(recvPacket);
+					
+					receivedRTPPacket = new RTPPacket(receivedData);
+					receivedHeader = receivedRTPPacket.getHeader();
+					if (receivedHeader.getChecksum() == receivedRTPPacket.calculateChecksum()) {
+						packetReceiveBuffer.add(receivedRTPPacket);
+					}
+				}
 			}
+			
 			
 			if (state == 1) {
 				
 			}
 			
-			
-			System.out.println(receivedRTPPacket.getHeader().getChecksum());
-			
+						
 			System.out.println("recv " + Arrays.toString(receivedData));
 
 		}
@@ -143,7 +158,65 @@ public class RTP {
 		
 	}
 	
-	public void open() {
+	/*
+	 * Takes in a file name and converts it into a byte array, and then splits this byte array into
+	 * packets to send.
+	 */
+	public void sendFile(String filename) {
+		File file = new File(filename);
+		
+		byte[] byteArray = new byte[(int) file.length()];
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream(file);
+			fileInputStream.read(byteArray);
+			
+			byte[] packetBytes;
+			
+			if (byteArray.length < MAXBUFFER) {
+				packetBytes = new byte[byteArray.length];
+			} else {
+				packetBytes = new byte[MAXBUFFER];
+			}
+			
+			int packetNumber = 0;
+			
+			for (int i = 0; i < byteArray.length; i++) {
+				packetBytes[i] = byteArray[(packetNumber * MAXBUFFER) + i];
+
+				RTPHeader rtpHeader = new RTPHeader(sourcePort, destinationPort, packetNumber);
+				if (packetNumber == 0) {
+					rtpHeader.setBEG(true);
+				} else if ((packetNumber * MAXBUFFER) == byteArray.length){
+					rtpHeader.setFIN(false);
+				}
+				rtpHeader.setSequenceNumber(sequenceNumber++);
+				rtpHeader.setWindowSizeOffset(packetNumber);
+				rtpHeader.setTimestamp(getNTPTimeStamp());
+								
+				RTPPacket rtpPacket = new RTPPacket(rtpHeader, packetBytes);
+				rtpPacket.updateChecksum();
+				
+				//Limit each packet to 254 bytes.
+				if (i % 254 == 0) {
+					sendPacket = new DatagramPacket(packetBytes, packetBytes.length, serverAddress, destinationPort);
+					packetNumber += 255;
+					socket.send(sendPacket);
+				}
+			}
+
+			sendPacket = new DatagramPacket(packetBytes, packetBytes.length, serverAddress, destinationPort);
+			socket.send(sendPacket);
+			
+			
+			fileInputStream.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("File was not found.");
+				
+		} catch (IOException e) {
+			System.out.println("Error reading file.");
+			
+		}
 		
 	}
 	

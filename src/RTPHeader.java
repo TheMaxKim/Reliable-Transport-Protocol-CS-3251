@@ -178,10 +178,7 @@ import java.util.Arrays;
 			int flagsCombined = intBuffer.get(5);
 			this.timestamp = intBuffer.get(6);
 			
-			System.out.println(byteBuffer.toString());
-			
 
-			System.out.println("flagsCombined" + Integer.toBinaryString(flagsCombined));
 			int ackInt = (flagsCombined >>> 31) & 0x1;
 			int nackInt = (flagsCombined >>> 30) & 0x1;
 			int synInt = (flagsCombined >>> 29) & 0x1;
