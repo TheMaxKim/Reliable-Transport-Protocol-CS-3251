@@ -9,14 +9,53 @@ import java.util.Scanner;
 public class FTAServer{
    
    public static void main(String args[]) throws Exception{
-   
-      int State = 0;
+	   
+	   if (args.length != 3) {
+			System.out.println("Invalid number of arguments. Correct usage involves three command-line arguments, \"fta-server X A P\".");
+			System.out.println("X is the port number the file transfer server should bind to, and should be equal to the client's port number + 1");
+			System.out.println("A is the IP address of NetEmu.");
+			System.out.println("P is the UDP port number of NetEmu.");
+			System.exit(0);
+	   }
+	   
+	   System.out.println("FTAServer started");
+
+	   
+	   final int hostPort = Integer.parseInt(args[0]);
+	   
+	   // Client port is always equal to server port - 1.
+	   final int destinationPort = hostPort - 1;
+	   
+	   
+	   final InetAddress IPAddress = InetAddress.getByName(args[1]);
+	   final int UDPPortNumber = Integer.parseInt(args[2]);
+	   
+	   
+	   /*
+	    * Runs the server listen on a separate thread, so that the application isn't blocked
+	    * and the user can still manage the FTA server while it is listening for connections and data.
+	    */
+	   Thread serverThread = new Thread() {
+		   public void run() {
+			   
+			   RTP serverRTP = new RTP(IPAddress, hostPort, destinationPort);
+			   try {
+				   serverRTP.startServer();
+				   serverRTP.listen();
+			   } catch (IOException e) {
+				   // TODO Auto-generated catch block
+				   e.printStackTrace();
+			   }
+		   }
+	   };
+	  
+      //int State = 0;
       /* State
        * 0= CLOSED
        * 1= LISTEN
        * 2= ESTABLISHED
        */
-
+      /* Old Code
       String portStr=args[0];
       String emuAdd=args[1];
       String emuPortStr=args[2];
@@ -54,5 +93,6 @@ public class FTAServer{
             //TODO send file to client
          }                  
       }
+      */
    }
 }
