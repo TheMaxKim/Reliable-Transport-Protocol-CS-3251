@@ -37,8 +37,7 @@ public class RTP {
 		DatagramPacket sendPacket = new DatagramPacket(data, data.length, serverAddress, destinationPort);
 		System.out.println("send " + Arrays.toString(data));
 		socket.send(sendPacket);
-		socket.receive(recvPacket);
-		System.out.println(Arrays.toString(recvPacket.getData()));
+
 	}
 	
 	public void startServer() throws SocketException {
@@ -49,10 +48,17 @@ public class RTP {
 	}
 	
 	public void listen() throws IOException {
-		while(true) {
+
 			socket.receive(recvPacket);
-			System.out.println(Arrays.toString(recvPacket.getData()));
-		}
+			
+			byte[] receivedData = new byte[recvPacket.getLength()];
+			
+			receivedData = Arrays.copyOfRange(recvPacket.getData(), 0, recvPacket.getLength());
+			
+			System.out.println("recv " + Arrays.toString(receivedData));
+			
+			
+		
 	}
 	
 	public void open() {

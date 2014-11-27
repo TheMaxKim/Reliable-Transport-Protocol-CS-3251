@@ -48,6 +48,7 @@ public class FTAClient {
 			RTP testRTP = new RTP(InetAddress.getLocalHost(), 3000, 3001);
 			testRTP.startServer();
 			testRTP.send(testPacket.getPacketByteArray());
+			testRTP.listen();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
