@@ -42,13 +42,26 @@ public class RTP {
 		RTPPacket synPacket;
 		RTPHeader synHeader = new RTPHeader(sourcePort, destinationPort, 0);
 		synHeader.setSYN(true);
-		synHeader.setTimestamp(getNTPTimeStamp());
+		
+		int initialTimestamp = getNTPTimeStamp();
+		
+		synHeader.setTimestamp(initialTimestamp);
 		synPacket = new RTPPacket(synHeader, null);
 		synPacket.updateChecksum();
 		
 		byte[] synPacketBytes = synPacket.getPacketByteArray();
+		
+		boolean established = false;
 		sendPacket = new DatagramPacket(synPacketBytes, synPacketBytes.length, serverAddress, destinationPort);
-		socket.send(sendPacket);
+
+		
+		while (compareTimestamp(initialTimestamp) && !established) {
+			if (!compareTimestamp(initialTimestamp)) {
+				socket.send(sendPacket);
+			}
+			
+		}
+		
 		System.out.println("Attempting to establish connection.");
 	}
 	
