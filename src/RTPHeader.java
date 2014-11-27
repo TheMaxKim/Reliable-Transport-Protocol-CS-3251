@@ -158,8 +158,9 @@ import java.util.Arrays;
 			//Converts the byte buffer into a byte array.
 			headerByteArray = byteBuffer.array();
 			
+			//System.out.println(Arrays.toString(headerByteArray));
+			
 			//Returns the completed byte buffer.
-			System.out.println(Arrays.toString(headerByteArray));
 			return headerByteArray;
 		}
 		

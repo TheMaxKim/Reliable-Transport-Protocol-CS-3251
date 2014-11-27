@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -30,14 +33,28 @@ public class FTAClient {
 		RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
 	
 		byte[] data = {00, 11, 22};
-		RTPPacket testPacket = new RTPPacket(50, 40, data);
+		RTPPacket testPacket = new RTPPacket(newHeader, data);
 		
 		RTPPacket secondPacket = new RTPPacket(testPacket.getPacketByteArray());
+		secondPacket.getPacketByteArray();
+
 		
-		if (testPacket == secondPacket) {
+		//Test to make sure they are the same
+		if (Arrays.equals(testPacket.getPacketByteArray(), secondPacket.getPacketByteArray())) {
 			System.out.println("yo");
 		}
 		
+		try {
+			RTP testRTP = new RTP(InetAddress.getLocalHost(), 3000, 3001);
+			testRTP.startServer();
+			testRTP.send(testPacket.getPacketByteArray());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		

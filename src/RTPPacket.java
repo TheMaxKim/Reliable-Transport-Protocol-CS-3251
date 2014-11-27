@@ -13,13 +13,25 @@ public class RTPPacket {
 	// Data to be delivered in the RTP packet
 	private byte[] data;
 	
-	// Constructor for a RTP packet
+	/*
+	 * Constructor for a RTP packet with only the source port, destination port, and data
+	 */
 	public RTPPacket(int sourcePort, int destinationPort, byte[] data) {
 		this.setHeader(new RTPHeader(sourcePort, destinationPort, 0));
 		this.setData(data);
 	}
 
-	// Constructor for a RTP packet from a byte array.
+	/*
+	 * Constructor for a RTP packet with a provided header and data
+	 */
+	public RTPPacket(RTPHeader header, byte[] data) {
+		this.setHeader(header);
+		this.setData(data);
+	}
+	
+	/*
+	 *  Constructor for a RTP packet from a byte array.
+	 */
 	public RTPPacket(byte[] packetByteArray) {
 		// Obtains the bytes belonging to the header
 		byte[] headerBytes = Arrays.copyOfRange(packetByteArray, 0, 28);
@@ -51,6 +63,7 @@ public class RTPPacket {
 		
 		packetByteArray = outputStream.toByteArray();
 		
+		//System.out.println("packetByteArray\n" + Arrays.toString(packetByteArray));
 		return packetByteArray;
 	}
 	
@@ -92,11 +105,11 @@ public class RTPPacket {
 		packetByteArray[17] = 0x00;
 		packetByteArray[18] = 0x00;
 		packetByteArray[19] = 0x00;
-		System.out.println(Arrays.toString(packetByteArray));
+		//System.out.println(Arrays.toString(packetByteArray));
 
 		checksum.update(packetByteArray, 0, packetByteArray.length);
 		checksumValue = (int) checksum.getValue();
-		System.out.println("checksumValue" + checksumValue);
+		//System.out.println("checksumValue" + checksumValue);
 		return checksumValue;
 	}
 

@@ -1,24 +1,58 @@
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.net.ntp.NTPUDPClient; 
 import org.apache.commons.net.ntp.TimeInfo;
 
 
 public class RTP {
+	
+	private final int MAXBUFFER = 255;
+	
 	private DatagramSocket socket;
 	private InetAddress serverAddress;
+	
+	DatagramPacket recvPacket;
 	private int sourcePort;
 	private int destinationPort;
 	
 	public RTP(InetAddress serverAddress, int sourcePort, int destinationPort) {
-	
+		this.serverAddress = serverAddress;
+		this.sourcePort = sourcePort;
+		this.destinationPort = destinationPort;
+		try {
+			socket = new DatagramSocket(destinationPort);
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public void setupServer() {
+	public void send(byte[] data) throws IOException {
+		DatagramPacket sendPacket = new DatagramPacket(data, data.length, serverAddress, destinationPort);
+		System.out.println("send " + Arrays.toString(data));
+		socket.send(sendPacket);
+		socket.receive(recvPacket);
+		System.out.println(Arrays.toString(recvPacket.getData()));
+	}
+	
+	public void startServer() throws SocketException {
+
+		recvPacket = new DatagramPacket(new byte[MAXBUFFER], MAXBUFFER);
 		
+		
+	}
+	
+	public void listen() throws IOException {
+		while(true) {
+			socket.receive(recvPacket);
+			System.out.println(Arrays.toString(recvPacket.getData()));
+		}
 	}
 	
 	public void open() {
