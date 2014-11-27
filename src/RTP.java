@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
+import java.lang.*;
 import org.apache.commons.net.ntp.NTPUDPClient; 
 import org.apache.commons.net.ntp.TimeInfo;
 
@@ -20,6 +21,7 @@ public class RTP {
 	DatagramPacket recvPacket;
 	private int sourcePort;
 	private int destinationPort;
+   private int threshold;        //RTT timeout threshold
 	
 	public RTP(InetAddress serverAddress, int sourcePort, int destinationPort) {
 		this.serverAddress = serverAddress;
@@ -85,8 +87,9 @@ public class RTP {
 	/*
 	 * Retrieves an NTP timestamp from the specified time server.
 	 */
-	public static void getNTPTimeStamp() throws IOException {
-		String TIME_SERVER = "time-a.nist.gov";   
+	public static int getNTPTimeStamp() throws IOException {
+
+      String TIME_SERVER = "time-a.nist.gov";   
 		NTPUDPClient timeClient = new NTPUDPClient();
 		InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
 		TimeInfo timeInfo = timeClient.getTime(inetAddress);
@@ -95,7 +98,7 @@ public class RTP {
 		System.out.println(Long.toBinaryString(returnTime));
 		Date date = new Date(returnTime);
 		System.out.println(date.toString());
-        splitTimeStamp(returnTime);
+      return splitTimeStamp(returnTime);
 	}
 	
 	/*
@@ -117,5 +120,18 @@ public class RTP {
         
 		return RTPTimestamp;		
 	}
-	
+   
+   /*
+    * Compares timestamps for estimating RRT
+    * Returns TRUE if difference is within threshold
+    */
+	public boolean compareTimestamp(int timestamp){
+      int RTPTimestamp = this.getNTPTimeStamp();
+      
+      if(Math.abs(RTPTimestamp-timestamp)<=this.threshold){
+         return true;
+      }else{
+         return false;
+      }   
+   }
 }
