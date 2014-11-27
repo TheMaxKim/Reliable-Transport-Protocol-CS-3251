@@ -20,6 +20,8 @@ public class FTAClient {
 		
 		int hostPort = Integer.parseInt(args[0]);
    
+		System.out.println("FTA Client started.");
+		
 		// Client port is always equal to server port - 1.
 		int destinationPort = hostPort + 1;
    

@@ -18,7 +18,7 @@ public class FTAServer{
 			System.exit(0);
 	   }
 	   
-	   System.out.println("FTAServer started");
+	   System.out.println("FTA Server started");
 
 	   
 	   final int hostPort = Integer.parseInt(args[0]);

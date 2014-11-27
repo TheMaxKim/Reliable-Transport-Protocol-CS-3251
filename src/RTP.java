@@ -125,7 +125,7 @@ public class RTP {
     * Compares timestamps for estimating RRT
     * Returns TRUE if difference is within threshold
     */
-	public boolean compareTimestamp(int timestamp){
+	public boolean compareTimestamp(int timestamp) throws IOException{
       int RTPTimestamp = this.getNTPTimeStamp();
       
       if(Math.abs(RTPTimestamp-timestamp)<=this.threshold){
