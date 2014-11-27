@@ -24,17 +24,19 @@ public class FTAServer{
 	   final int hostPort = Integer.parseInt(args[0]);
 	   
 	   // Client port is always equal to server port - 1.
-	   final int destinationPort = hostPort - 1;
 	   
 	   
 	   final InetAddress IPAddress = InetAddress.getByName(args[1]);
-	   final int UDPPortNumber = Integer.parseInt(args[2]);
+	   final int destinationPort = Integer.parseInt(args[2]);
 	   
-	   
+	   RTP serverRTP = new RTP(IPAddress, hostPort, destinationPort);
+
+	   serverRTP.startServer();
+	   serverRTP.listen();
 	   /*
 	    * Runs the server listen on a separate thread, so that the application isn't blocked
 	    * and the user can still manage the FTA server while it is listening for connections and data.
-	    */
+	    *//*
 	   Thread serverThread = new Thread() {
 		   public void run() {
 			   
@@ -47,7 +49,7 @@ public class FTAServer{
 				   e.printStackTrace();
 			   }
 		   }
-	   };
+	   };*/
 	  
       //int State = 0;
       /* State
@@ -95,4 +97,6 @@ public class FTAServer{
       }
       */
    }
+   
+
 }

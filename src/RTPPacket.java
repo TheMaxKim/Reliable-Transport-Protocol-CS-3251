@@ -64,7 +64,9 @@ public class RTPPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(headerByteArray);
-			outputStream.write(data);
+			if (data != null) {
+				outputStream.write(data);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

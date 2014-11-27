@@ -25,11 +25,11 @@ public class FTAClient {
 		System.out.println("FTA Client started.");
 		
 		// Client port is always equal to server port - 1.
-		int destinationPort = hostPort + 1;
+		
    
    
 		InetAddress IPAddress = InetAddress.getByName(args[1]);
-		int UDPPortNumber = Integer.parseInt(args[2]);
+		int destinationPort = Integer.parseInt(args[2]);
 		
 		Scanner keyboard = new Scanner(System.in);
 
@@ -48,7 +48,7 @@ public class FTAClient {
 			
 			
 			if (commands[0].equals("connect-get") && commands.length == 2) {
-					
+					testRTP.establishConnection(hostPort, destinationPort);
 					String fileName = commands[1];
 					testRTP.send(fileName.getBytes(Charset.forName("UTF-8")));
 					
