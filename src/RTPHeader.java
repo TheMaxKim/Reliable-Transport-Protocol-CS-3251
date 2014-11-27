@@ -94,7 +94,7 @@ import java.util.Arrays;
 			return SYN;
 		}
 
-		public void setSYN(boolean syn) {
+		public void setSYN(boolean SYN) {
 			this.SYN = SYN;
 		}
 
@@ -178,15 +178,22 @@ import java.util.Arrays;
 			int flagsCombined = intBuffer.get(5);
 			this.timestamp = intBuffer.get(6);
 			
-
+			System.out.println(byteBuffer.toString());
 			
 
-			
-			int ackInt = flagsCombined >>> 31;
+			System.out.println("flagsCombined" + Integer.toBinaryString(flagsCombined));
+			int ackInt = (flagsCombined >>> 31) & 0x1;
 			int nackInt = (flagsCombined >>> 30) & 0x1;
 			int synInt = (flagsCombined >>> 29) & 0x1;
 			int finInt = (flagsCombined >>> 28) & 0x1;
 			int begInt = (flagsCombined >>> 27) & 0x1;
+			
+			this.ACK = (ackInt != 0);
+			this.NACK = (nackInt != 0);
+			this.SYN = (synInt != 0);
+			this.FIN = (finInt != 0);
+			this.BEG = (begInt != 0);
+			
 			
 			/* For Testing
 			System.out.println("sourcePort" + this.sourcePort);

@@ -66,12 +66,12 @@ public class RTP {
 		synHeader.setTimestamp(initialTimestamp);
 		synPacket = new RTPPacket(synHeader, null);
 		synPacket.updateChecksum();
-		
-		byte[] synPacketBytes = synPacket.getPacketByteArray();
-		
-		
-		sendPacket = new DatagramPacket(synPacketBytes, synPacketBytes.length, serverAddress, destinationPort);
 
+		//System.out.println("header bytes" + Arrays.toString(synPacket.getHeader().getHeaderByteArray()));
+		byte[] synPacketBytes = synPacket.getPacketByteArray();
+		System.out.println("first checksum " + synPacket.getHeader().getChecksum());
+		sendPacket = new DatagramPacket(synPacketBytes, synPacketBytes.length, serverAddress, destinationPort);
+		System.out.println("send" + Arrays.toString(synPacketBytes));
 		
 		recvPacket = new DatagramPacket(new byte[MAXBUFFER], MAXBUFFER);
 
@@ -112,9 +112,15 @@ public class RTP {
 			byte[] receivedData = new byte[recvPacket.getLength()];
 			
 			receivedData = Arrays.copyOfRange(recvPacket.getData(), 0, recvPacket.getLength());
-			
+			System.out.println(recvPacket.getLength());
 			RTPPacket receivedRTPPacket = new RTPPacket(receivedData);
+			//System.out.println("data length " + receivedData.length + "packet length " + receivedRTPPacket.getPacketByteArray().length);
+			//System.out.println(receivedRTPPacket.getHeader().getChecksum());
+			//System.out.println("rtppacket" + Arrays.toString(receivedRTPPacket.getPacketByteArray()));
+			if (Arrays.equals(receivedData, receivedRTPPacket.getPacketByteArray())) System.out.println("wtf");
+			//System.out.println(receivedRTPPacket.calculateChecksum());
 			
+			System.out.println(receivedRTPPacket.getHeader().isSYN());
 			
 			if (receivedRTPPacket.getHeader().getChecksum() == receivedRTPPacket.calculateChecksum()) {
 				System.out.println("match");

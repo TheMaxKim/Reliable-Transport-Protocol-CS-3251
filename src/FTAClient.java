@@ -50,7 +50,7 @@ public class FTAClient {
 			if (commands[0].equals("connect-get") && commands.length == 2) {
 					testRTP.establishConnection(hostPort, destinationPort);
 					String fileName = commands[1];
-					testRTP.send(fileName.getBytes(Charset.forName("UTF-8")));
+					//testRTP.send(fileName.getBytes(Charset.forName("UTF-8")));
 					
 					
 			} else {

@@ -44,6 +44,7 @@ public class RTPPacket {
 	public RTPPacket(byte[] packetByteArray) {
 		// Obtains the bytes belonging to the header
 		byte[] headerBytes = Arrays.copyOfRange(packetByteArray, 0, 28);
+
 		//System.out.println("header bytes\n" + Arrays.toString(headerBytes));
 		
 		// Obtains the rest of the bytes that are the packet data.
@@ -107,7 +108,7 @@ public class RTPPacket {
 	public int calculateChecksum() {
 		int checksumValue;
 		
-		Checksum checksum = new CRC32();
+		CRC32 checksum = new CRC32();
 		
 		byte[] packetByteArray = getPacketByteArray();
 		
@@ -118,7 +119,7 @@ public class RTPPacket {
 		packetByteArray[19] = 0x00;
 		//System.out.println(Arrays.toString(packetByteArray));
 
-		checksum.update(packetByteArray, 0, packetByteArray.length);
+		checksum.update(packetByteArray);
 		checksumValue = (int) checksum.getValue();
 		//System.out.println("checksumValue" + checksumValue);
 		return checksumValue;
