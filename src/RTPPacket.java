@@ -18,6 +18,21 @@ public class RTPPacket {
 		this.setHeader(new RTPHeader(sourcePort, destinationPort, 0));
 		this.setData(data);
 	}
+
+	// Constructor for a RTP packet from a byte array.
+	public RTPPacket(byte[] packetByteArray) {
+		// Obtains the bytes belonging to the header
+		byte[] headerBytes = Arrays.copyOfRange(packetByteArray, 0, 28);
+		//System.out.println("header bytes\n" + Arrays.toString(headerBytes));
+		
+		// Obtains the rest of the bytes that are the packet data.
+		byte[] dataBytes = Arrays.copyOfRange(packetByteArray, 28, packetByteArray.length);
+		//System.out.println("data bytes\n" + Arrays.toString(dataBytes));
+		
+		this.setHeader(new RTPHeader(headerBytes));
+		this.setData(dataBytes);
+		
+	}
 	
 	public byte[] getPacketByteArray() {
 		byte[] packetByteArray;

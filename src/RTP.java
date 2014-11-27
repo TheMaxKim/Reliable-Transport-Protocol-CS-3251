@@ -17,6 +17,10 @@ public class RTP {
 	
 	}
 	
+	public void setupServer() {
+		
+	}
+	
 	public void open() {
 		
 	}

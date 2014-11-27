@@ -29,14 +29,16 @@ public class FTAClient {
 		testHeader.setWindowSizeOffset(6666);
 		RTPHeader newHeader = new RTPHeader(testHeader.getHeaderByteArray());
 	
-		byte[] data = {00};
+		byte[] data = {00, 11, 22};
 		RTPPacket testPacket = new RTPPacket(50, 40, data);
-		testPacket.updateChecksum();
-		System.out.println("checksum " + testPacket.getHeader().getChecksum());
 		
-		if (RTP.validateChecksum(testPacket)) {
-			System.out.println("Correct checksum");
+		RTPPacket secondPacket = new RTPPacket(testPacket.getPacketByteArray());
+		
+		if (testPacket == secondPacket) {
+			System.out.println("yo");
 		}
+		
+		
 		
 		
 	}

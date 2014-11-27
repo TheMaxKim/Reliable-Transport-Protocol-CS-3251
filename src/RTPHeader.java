@@ -174,11 +174,12 @@ import java.util.Arrays;
 			this.sequenceNumber = intBuffer.get(2);
 			this.windowSizeOffset = intBuffer.get(3);
 			this.checksum = intBuffer.get(4);
+			int flagsCombined = intBuffer.get(5);
 			this.timestamp = intBuffer.get(6);
 			
 
 			
-			int flagsCombined = intBuffer.get(5);
+
 			
 			int ackInt = flagsCombined >>> 31;
 			int nackInt = (flagsCombined >>> 30) & 0x1;
