@@ -44,15 +44,18 @@ public class RTPPacket {
 	public RTPPacket(byte[] packetByteArray) {
 		// Obtains the bytes belonging to the header
 		byte[] headerBytes = Arrays.copyOfRange(packetByteArray, 0, 28);
+		this.setHeader(new RTPHeader(headerBytes));
 
 		//System.out.println("header bytes\n" + Arrays.toString(headerBytes));
 		
 		// Obtains the rest of the bytes that are the packet data.
-		byte[] dataBytes = Arrays.copyOfRange(packetByteArray, 28, packetByteArray.length);
+		if (packetByteArray.length > 28) {
+			byte[] dataBytes = Arrays.copyOfRange(packetByteArray, 28, packetByteArray.length);
+			this.setData(dataBytes);
+		}
 		//System.out.println("data bytes\n" + Arrays.toString(dataBytes));
 		
-		this.setHeader(new RTPHeader(headerBytes));
-		this.setData(dataBytes);
+
 		
 	}
 	

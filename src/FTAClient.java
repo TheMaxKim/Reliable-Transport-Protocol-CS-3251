@@ -33,7 +33,7 @@ public class FTAClient {
 		
 		Scanner keyboard = new Scanner(System.in);
 
-		RTP testRTP = new RTP(IPAddress, hostPort, destinationPort);
+		RTP testRTP = new RTP(IPAddress, hostPort, destinationPort, false);
 		
 		
 		
@@ -50,7 +50,13 @@ public class FTAClient {
 			if (commands[0].equals("connect-get") && commands.length == 2) {
 					testRTP.establishConnection(hostPort, destinationPort);
 					String fileName = commands[1];
-					//testRTP.send(fileName.getBytes(Charset.forName("UTF-8")));
+					
+					if (testRTP.getState() == 2) {
+						testRTP.setFilename(commands[1]);
+						testRTP.sendRTPPacket(fileName.getBytes(Charset.forName("UTF-8")));
+						testRTP.setState(1);
+						testRTP.listen();
+					}
 					
 					
 			} else {

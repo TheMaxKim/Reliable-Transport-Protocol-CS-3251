@@ -29,11 +29,13 @@ public class FTAServer{
 	   final InetAddress IPAddress = InetAddress.getByName(args[1]);
 	   final int destinationPort = Integer.parseInt(args[2]);
 	   
-	   RTP serverRTP = new RTP(IPAddress, hostPort, destinationPort);
+	   RTP serverRTP = new RTP(IPAddress, hostPort, destinationPort, true);
 
 	   serverRTP.startServer();
-	   serverRTP.listen();
-	   /*
+	   while (true) {
+		   serverRTP.listen();
+	   
+   		}/*
 	    * Runs the server listen on a separate thread, so that the application isn't blocked
 	    * and the user can still manage the FTA server while it is listening for connections and data.
 	    *//*
